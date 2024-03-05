@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Todo List</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  .container {
+    max-width: 600px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  h1 {
+    text-align: center;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  li {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  li:last-child {
+    border-bottom: none;
+  }
+
+  .category-select {
+    margin-bottom: 10px;
+  }
+
+  .category-select select {
+    padding: 8px;
+    border-radius: 5px;
+  }
+
+  .delete-btn {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .delete-btn:hover {
+    background-color: #d32f2f;
+  }
+
+  .completed {
+    text-decoration: line-through;
+    color: #888;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Todo List</h1>
+  
+  <div class="category-select">
+    <label for="category">Category:</label>
+    <select id="category">
+      <option value="all">All</option> <!-- Add an "All" option -->
+      <option value="work">Work</option>
+      <option value="personal">Personal</option>
+      <option value="study">Study</option>
+    </select>
+  </div>
+  <input type="text" id="taskInput" placeholder="Add new task...">
+  <ul id="taskList"></ul>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const categorySelect = document.getElementById("category");
+    const taskInput = document.getElementById("taskInput");
+    const taskList = document.getElementById("taskList");
+
+    function addTask() {
+      const taskText = taskInput.value.trim();
+      if (taskText === "") return;
+
+      const taskCategory = categorySelect.value;
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <input type="checkbox" class="checkbox">
+        <span>${taskText}</span>
+        <button class="delete-btn">-</button>
+      `;
+      li.dataset.category = taskCategory;
+      taskList.appendChild(li);
+      taskInput.value = "";
+
+      const checkbox = li.querySelector('.checkbox');
+      checkbox.addEventListener('change', function() {
+        if (this.checked) {
+          li.classList.add('completed');
+        } else {
+          li.classList.remove('completed');
+        }
+      });
+
+      const deleteBtn = li.querySelector('.delete-btn');
+      deleteBtn.addEventListener('click', function() {
+        li.remove();
+      });
+    }
+
+    document.getElementById("taskInput").addEventListener("keypress", function(event) {
+      if (event.key === "Enter") {
+        addTask();
+      }
+    });
+
+    categorySelect.addEventListener('change', function() {
+      const selectedCategory = categorySelect.value;
+      const taskItems = document.querySelectorAll('#taskList li');
+      taskItems.forEach(function(taskItem) {
+        if (selectedCategory === 'all' || taskItem.dataset.category === selectedCategory) {
+          taskItem.style.display = 'flex';
+        } else {
+          taskItem.style.display = 'none';
+        }
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
